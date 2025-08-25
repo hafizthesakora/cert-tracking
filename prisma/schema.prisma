@@ -1,0 +1,68 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+// User Model: Stores login info and roles
+model User {
+  id                    String                 @id @default(auto()) @map("_id") @db.ObjectId
+  name                  String?
+  email                 String?                @unique
+  password              String?
+  role                  Role                   @default(EMPLOYEE)
+  createdAt             DateTime               @default(now())
+  updatedAt             DateTime               @updatedAt
+  certifications        EmployeeCertification[]
+  // NOTE: We have removed the direct relation to managed certifications to simplify the schema
+}
+
+// Certification Model: The master list of all possible certifications
+model Certification {
+  id              String                 @id @default(auto()) @map("_id") @db.ObjectId
+  name            String                 @unique
+  description     String
+  employees       EmployeeCertification[]
+
+  // This is now a simple list of User IDs, not a formal Prisma relation.
+  // This is a robust pattern for MongoDB.
+  portalMasterIds String[]               @db.ObjectId
+}
+
+// EmployeeCertification Model: The link between a User and a Certification
+model EmployeeCertification {
+  id            String       @id @default(auto()) @map("_id") @db.ObjectId
+  user          User         @relation(fields: [userId], references: [id])
+  userId        String       @db.ObjectId
+  certification Certification @relation(fields: [certificationId], references: [id])
+  certificationId String     @db.ObjectId
+  issueDate     DateTime
+  expiryDate    DateTime
+  status        Status       @default(ACTIVE)
+  renewalDate   DateTime?
+
+  @@unique([userId, certificationId]) // Ensures an employee can't have the same cert twice
+}
+
+// Enum for User Roles
+enum Role {
+  EMPLOYEE
+  PORTAL_MASTER
+  ADMIN
+}
+
+// Enum for Certification Status
+enum Status {
+  ACTIVE
+  EXPIRES_SOON
+  EXPIRED
+  RENEWAL_REQUESTED
+  INITIATED
+  POSTPONED
+}
