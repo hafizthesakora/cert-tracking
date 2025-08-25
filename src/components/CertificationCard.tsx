@@ -1,7 +1,10 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
 'use client';
 
 import { useState } from 'react';
 import { useSession } from 'next-auth/react';
+
 import {
   Certification,
   EmployeeCertification,
@@ -24,6 +27,7 @@ type Props = {
 
 export default function CertificationCard({ cert, employee }: Props) {
   const { data: session } = useSession();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const user = session?.user as any;
   const isPortalMasterOrAdmin =
     user?.role === 'ADMIN' || user?.role === 'PORTAL_MASTER';

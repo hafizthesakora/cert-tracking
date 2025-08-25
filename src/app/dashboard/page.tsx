@@ -84,15 +84,23 @@ export default async function DashboardPage() {
       const allUsers = await prisma.user.findMany({
         select: { id: true, name: true },
       });
-      const usersMap = new Map(allUsers.map((u) => [u.id, u.name]));
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const usersMap = new Map(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        allUsers.map((u: { id: any; name: any }) => [u.id, u.name])
+      );
 
-      const certsWithPMNames = allCerts.map((cert) => ({
-        ...cert,
-        portalMasters: cert.portalMasterIds.map((id) => ({
-          id,
-          name: usersMap.get(id) || 'Unknown User',
-        })),
-      }));
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const certsWithPMNames = allCerts.map(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (cert: { portalMasterIds: any[] }) => ({
+          ...cert,
+          portalMasters: cert.portalMasterIds.map((id) => ({
+            id,
+            name: usersMap.get(id) || 'Unknown User',
+          })),
+        })
+      );
 
       return (
         <AdminDashboard

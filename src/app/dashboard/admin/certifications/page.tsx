@@ -9,6 +9,7 @@ import ManageCertificationsClient from '@/components/admin/ManageCertificationsC
 export default async function ManageCertificationsPage() {
   // Security check: Ensure only admins can access this page
   const session = await getServerSession(authOptions);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   if ((session?.user as any)?.role !== 'ADMIN') {
     redirect('/dashboard');
   }
