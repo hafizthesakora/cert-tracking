@@ -1,4 +1,4 @@
-import { EmployeeCertification, Certification, Status } from '@prisma/client';
+import { EmployeeCertification, Certification } from '@prisma/client';
 import CertificationCard from '@/components/CertificationCard';
 import StatCard from '@/components/StatCard';
 import { CheckCircle, Clock, AlertTriangle } from 'lucide-react';
@@ -8,7 +8,6 @@ type CertWithDetails = EmployeeCertification & {
 };
 
 const EmployeeDashboard = ({ certs }: { certs: CertWithDetails[] }) => {
-  // Calculate stats
   const activeCount = certs.filter((c) => c.status === 'ACTIVE').length;
   const expiringSoonCount = certs.filter(
     (c) => c.status === 'EXPIRES_SOON'

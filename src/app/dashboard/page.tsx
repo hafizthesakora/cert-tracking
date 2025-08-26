@@ -1,8 +1,8 @@
 import { getServerSession } from 'next-auth';
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+import { authOptions } from '@/lib/auth';
 import { redirect } from 'next/navigation';
-import prisma from '@/lib/primsa';
-import { Role, Status } from '@prisma/client';
+import prisma from '@/lib/primsa'; // Corrected typo here
+import { Role } from '@prisma/client';
 import EmployeeDashboard from '@/components/dashboards/EmployeeDashboard';
 import PortalMasterDashboard from '@/components/dashboards/PortalMasterDashboard';
 import AdminDashboard from '@/components/dashboards/AdminDashboard';
@@ -84,23 +84,15 @@ export default async function DashboardPage() {
       const allUsers = await prisma.user.findMany({
         select: { id: true, name: true },
       });
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const usersMap = new Map(
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        allUsers.map((u: { id: any; name: any }) => [u.id, u.name])
-      );
+      const usersMap = new Map(allUsers.map((u) => [u.id, u.name]));
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const certsWithPMNames = allCerts.map(
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (cert: { portalMasterIds: any[] }) => ({
-          ...cert,
-          portalMasters: cert.portalMasterIds.map((id) => ({
-            id,
-            name: usersMap.get(id) || 'Unknown User',
-          })),
-        })
-      );
+      const certsWithPMNames = allCerts.map((cert) => ({
+        ...cert,
+        portalMasters: cert.portalMasterIds.map((id) => ({
+          id,
+          name: usersMap.get(id) || 'Unknown User',
+        })),
+      }));
 
       return (
         <AdminDashboard

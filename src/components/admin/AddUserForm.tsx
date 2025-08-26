@@ -43,8 +43,10 @@ export default function AddUserForm() {
     switch (role) {
       case 'ADMIN':
         return 'Administrator';
-      case 'USER':
-        return 'Standard User';
+      case 'PORTAL_MASTER':
+        return 'Portal Master';
+      case 'EMPLOYEE':
+        return 'Employee';
       default:
         return role;
     }
@@ -54,7 +56,9 @@ export default function AddUserForm() {
     switch (role) {
       case 'ADMIN':
         return <Shield className="h-4 w-4 text-amber-600" />;
-      case 'USER':
+      case 'PORTAL_MASTER':
+        return <UserPlus className="h-4 w-4 text-indigo-600" />;
+      case 'EMPLOYEE':
         return <User className="h-4 w-4 text-blue-600" />;
       default:
         return <User className="h-4 w-4 text-slate-600" />;
@@ -212,8 +216,10 @@ export default function AddUserForm() {
               </div>
               <p className="text-xs text-slate-600">
                 {role === 'ADMIN'
-                  ? 'Full system access and user management'
-                  : 'Standard user with limited permissions'}
+                  ? 'Full system access and user management.'
+                  : role === 'PORTAL_MASTER'
+                  ? 'Manages specific certifications and renewals.'
+                  : 'Can view own certifications and request renewals.'}
               </p>
             </div>
           ))}

@@ -3,7 +3,7 @@
 import { useState, useMemo } from 'react';
 import { Certification, User } from '@prisma/client';
 import EditCertificationModal from './EditCertificationModal';
-import { Shield, UserCheck, Edit, Search } from 'lucide-react';
+import { Shield, Search } from 'lucide-react';
 
 type CertWithCount = Certification & {
   _count: {

@@ -287,7 +287,7 @@ export default function AddCertificationForm({ users }: { users: User[] }) {
                 ))
               ) : (
                 <div className="px-4 py-3 text-sm text-slate-500">
-                  No users found matching "{searchTerm}"
+                  No users found matching &quot;{searchTerm}&quot;
                 </div>
               )}
             </div>

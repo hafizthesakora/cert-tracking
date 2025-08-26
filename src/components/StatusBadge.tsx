@@ -6,7 +6,6 @@ import {
   AlertTriangle,
   FileText,
   ArrowRight,
-  ShieldCheck,
   XCircle,
 } from 'lucide-react';
 

@@ -2,7 +2,7 @@
 
 import { revalidatePath } from 'next/cache';
 import prisma from '@/lib/primsa';
-import { Role, Status } from '@prisma/client';
+import { Role } from '@prisma/client';
 import { hash } from 'bcrypt';
 import {
   sendEmail,

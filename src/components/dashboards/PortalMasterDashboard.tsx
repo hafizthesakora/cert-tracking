@@ -3,16 +3,10 @@ import { useState } from 'react';
 import {
   Certification as TCertification,
   EmployeeCertification,
-  User,
 } from '@prisma/client';
 import CertificationCard from '@/components/CertificationCard';
 import StatCard from '@/components/StatCard';
-import {
-  FileText,
-  AlertTriangle,
-  ShieldCheck,
-  ClipboardList,
-} from 'lucide-react';
+import { FileText, AlertTriangle, ClipboardList } from 'lucide-react';
 
 type EmployeeWithUser = EmployeeCertification & {
   user: { name: string | null; email: string | null };
@@ -28,7 +22,6 @@ const PortalMasterDashboard = ({
     managedCerts[0] || null
   );
 
-  // Calculate stats
   const certsManagedCount = managedCerts.length;
   const allEmployeesCerts = managedCerts.flatMap((c) => c.employees);
   const renewalsRequestedCount = allEmployeesCerts.filter(
@@ -40,7 +33,7 @@ const PortalMasterDashboard = ({
 
   return (
     <div className="space-y-8">
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <StatCard
           title="Certs Managed"
           value={certsManagedCount}
@@ -102,7 +95,7 @@ const PortalMasterDashboard = ({
                     {selectedCert.employees.map((empCert) => (
                       <CertificationCard
                         key={empCert.id}
-                        cert={empCert}
+                        cert={{ ...empCert, certification: selectedCert }}
                         employee={empCert.user}
                       />
                     ))}

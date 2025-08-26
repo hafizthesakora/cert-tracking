@@ -3,10 +3,8 @@ import { useState, useMemo } from 'react';
 import {
   Certification as TCertification,
   EmployeeCertification,
-  User,
 } from '@prisma/client';
-import CertificationCard from '@/components/CertificationCard';
-import StatCard from '@/components/StatCard';
+
 import {
   Users,
   Shield,
@@ -68,13 +66,13 @@ const AdminDashboard = ({
       filtered = filtered.filter((cert) => {
         const now = new Date();
         const hasExpired = cert.employees.some(
-          (emp) => emp.expirationDate && new Date(emp.expirationDate) < now
+          (emp) => emp.expiryDate && new Date(emp.expiryDate) < now
         );
         const isExpiringSoon = cert.employees.some(
           (emp) =>
-            emp.expirationDate &&
-            new Date(emp.expirationDate) > now &&
-            new Date(emp.expirationDate) <=
+            emp.expiryDate &&
+            new Date(emp.expiryDate) > now &&
+            new Date(emp.expiryDate) <=
               new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000)
         );
 
@@ -102,8 +100,8 @@ const AdminDashboard = ({
     let expiring = 0;
 
     selectedCert?.employees.forEach((emp) => {
-      if (emp.expirationDate) {
-        const expDate = new Date(emp.expirationDate);
+      if (emp.expiryDate) {
+        const expDate = new Date(emp.expiryDate);
         if (expDate < now) {
           expired++;
         } else if (
@@ -122,10 +120,10 @@ const AdminDashboard = ({
   }, [selectedCert]);
 
   const getStatusColor = (empCert: EmployeeWithUser) => {
-    if (!empCert.expirationDate) return 'text-slate-500';
+    if (!empCert.expiryDate) return 'text-slate-500';
 
     const now = new Date();
-    const expDate = new Date(empCert.expirationDate);
+    const expDate = new Date(empCert.expiryDate);
 
     if (expDate < now) return 'text-red-600';
     if (expDate <= new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000))
@@ -134,10 +132,10 @@ const AdminDashboard = ({
   };
 
   const getStatusIcon = (empCert: EmployeeWithUser) => {
-    if (!empCert.expirationDate) return <Clock className="h-4 w-4" />;
+    if (!empCert.expiryDate) return <Clock className="h-4 w-4" />;
 
     const now = new Date();
-    const expDate = new Date(empCert.expirationDate);
+    const expDate = new Date(empCert.expiryDate);
 
     if (expDate < now) return <XCircle className="h-4 w-4" />;
     if (expDate <= new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000))
@@ -272,6 +270,7 @@ const AdminDashboard = ({
                   <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
                   <select
                     value={filterStatus}
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     onChange={(e) => setFilterStatus(e.target.value as any)}
                     className="pl-10 pr-8 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 appearance-none bg-white min-w-[140px]"
                   >
@@ -412,11 +411,11 @@ const AdminDashboard = ({
                                     <p className="text-sm text-slate-600 truncate">
                                       {empCert.user.email}
                                     </p>
-                                    {empCert.expirationDate && (
+                                    {empCert.expiryDate && (
                                       <p className="text-sm text-slate-600 mt-1">
                                         Expires:{' '}
                                         {new Date(
-                                          empCert.expirationDate
+                                          empCert.expiryDate
                                         ).toLocaleDateString()}
                                       </p>
                                     )}

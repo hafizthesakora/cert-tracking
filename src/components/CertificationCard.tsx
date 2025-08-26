@@ -1,23 +1,18 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-
 'use client';
 
 import { useState } from 'react';
 import { useSession } from 'next-auth/react';
-
-import {
-  Certification,
-  EmployeeCertification,
-  Status,
-  User,
-} from '@prisma/client';
+import { Certification, EmployeeCertification } from '@prisma/client';
 import { requestRenewal, postponeRenewal } from '@/app/actions';
 import StatusBadge from './StatusBadge';
 import ActionModal from './ActionModal';
 import { Calendar, User as UserIcon } from 'lucide-react';
 
+// --- FIX #1 ---
+// The 'certification' object is now required (no '?').
+// This guarantees that it will always be passed in from the parent dashboards.
 type CertWithDetails = EmployeeCertification & {
-  certification?: Certification; // Optional for when it's passed directly
+  certification: Certification;
 };
 
 type Props = {
@@ -35,11 +30,11 @@ export default function CertificationCard({ cert, employee }: Props) {
   const [isInitiateModalOpen, setInitiateModalOpen] = useState(false);
   const [isConfirmModalOpen, setConfirmModalOpen] = useState(false);
 
-  const certificationDetails = cert.certification || cert;
+  // --- FIX #2 ---
+  // This is now simpler and type-safe because 'cert.certification' is guaranteed to exist.
+  const certificationDetails = cert.certification;
 
   const renderEmployeeActions = () => {
-    // --- THIS IS THE KEY CHANGE ---
-    // Added 'EXPIRED' to the list of statuses that can request renewal.
     if (
       ['ACTIVE', 'EXPIRES_SOON', 'POSTPONED', 'EXPIRED'].includes(cert.status)
     ) {
@@ -57,7 +52,6 @@ export default function CertificationCard({ cert, employee }: Props) {
 
   const renderPortalMasterActions = () => {
     switch (cert.status) {
-      // Show the button if renewal is requested, expiring, or expired
       case 'RENEWAL_REQUESTED':
       case 'EXPIRES_SOON':
       case 'EXPIRED':
